@@ -47,8 +47,8 @@ This model is a lightweight face mask detection model. Based on ssd,the backbone
 │   └── README.md
 ├── Maskdata
 │   ├── Annotations
-│ 	├── ImageSets
-│   	└── Main
+│ 	 ├── ImageSets
+│   	   └── Main
 │   │       ├── train.txt
 │   │       ├── trainval.txt
 │   │       └── val.txt
@@ -87,7 +87,7 @@ Create a new python virtual environment by [Anaconda](https://www.anaconda.com/)
      python dataset/voc_to_tfrecord.py --dataset_path Maskdata/  --output_file dataset/train_mask.tfrecord --split train
      ```
 
-     you can change the --split paragrams to 'val' to get the validation tfrecord, Please modify the inside setting `voc_to_tfrecord.py` for different situations.
+     you can change the --split parameters to 'val' to get the validation tfrecord, Please modify the inside setting `voc_to_tfrecord.py` for different situations.
 
 3. Check tfrecord dataloader by run `python dataset/check_dataset.py` .
 
