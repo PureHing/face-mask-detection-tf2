@@ -104,7 +104,7 @@ def main(_):
         with tf.GradientTape() as tape:
             predictions = model(inputs, training=True)
             losses = {}
-            losses['reg'] = tf.reduce_sum(model.losses)  #unused.init for redefine network
+            losses['reg'] = tf.reduce_sum(model.losses)  #unused. Init for redefine network
             losses['loc'], losses['class'] = multi_loss(labels, predictions)
             total_loss = tf.add_n([l for l in losses.values()])
 
@@ -151,6 +151,7 @@ def main(_):
             # model.save_weights(filepath)
             # print(f'model saved into: {filepath}')
             exit(0)
+
 if __name__ == '__main__':
 
     try:

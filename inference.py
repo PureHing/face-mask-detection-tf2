@@ -20,7 +20,7 @@ from components import config
 
 
 flags.DEFINE_string('model_path', 'checkpoints/', 'config file path')
-flags.DEFINE_string('img_path', 'assert/1_Handshaking_Handshaking_1_71.jpg', 'path to input image')
+flags.DEFINE_string('img_path', 'assets/1_Handshaking_Handshaking_1_71.jpg', 'path to input image')
 flags.DEFINE_boolean('camera', False, 'get image source from webcam or not')
 
 
@@ -111,7 +111,7 @@ def main(_):
         boxes = recover_pad_output(boxes, pad_params)
 
         # draw and save results
-        save_img_path = os.path.join('assert/out_' + os.path.basename(FLAGS.img_path))
+        save_img_path = os.path.join('assets/out_' + os.path.basename(FLAGS.img_path))
 
 
         for prior_index in range(len(boxes)):

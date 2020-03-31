@@ -14,7 +14,7 @@ This model is a lightweight face mask detection model. Based on ssd,the backbone
 - [x] Dataset prepocessing with `tf.data.TFRecordDataset`
 
 ```bash
-├── assert
+├── assets
 │   ├── 1_Handshaking_Handshaking_1_71.jpg
 │   ├── out_1_Handshaking_Handshaking_1_71.jpg
 │   ├── out_test_00002330.jpg
@@ -115,9 +115,9 @@ Create a new python virtual environment by [Anaconda](https://www.anaconda.com/)
   python inference.py  --model_path checkpoints/*.h5 --img_path assert/1_Handshaking_Handshaking_1_71.jpg
   ```
 
-  ![](https://raw.githubusercontent.com/PureHing/face-mask-detection-tf2/master/assert/out_test_00002330.jpg)
+  ![](https://raw.githubusercontent.com/PureHing/face-mask-detection-tf2/master/assets/out_test_00002330.jpg)
 
-  ![](https://raw.githubusercontent.com/PureHing/face-mask-detection-tf2/master/assert/out_1_Handshaking_Handshaking_1_71.jpg)
+  ![](https://raw.githubusercontent.com/PureHing/face-mask-detection-tf2/master/assets/out_1_Handshaking_Handshaking_1_71.jpg)
   
 
 ### mAP
@@ -130,3 +130,7 @@ Create a new python virtual environment by [Anaconda](https://www.anaconda.com/)
    python mAP/compute_mAP.py
   ```
 
+# Reference
++ mAP code: [https://github.com/Cartucho/mAP](https://github.com/Cartucho/mAP)
++ SSD-Tensorflow: [https://github.com/balancap/SSD-Tensorflow](https://github.com/balancap/SSD-Tensorflow/)
++ ssd-tf2: [https://github.com/ChunML/ssd-tf2](https://github.com/ChunML/ssd-tf2)
