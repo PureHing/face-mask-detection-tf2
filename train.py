@@ -14,9 +14,8 @@ from components.utils import set_memory_growth
 from components import config
 from components.prior_box import priors_box
 from dataset.tf_dataset_preprocess import load_dataset
-# from network.network import SlimModel
-# from network.model import SlimModel
-from network.net import SlimModel
+from network.network import SlimModel
+
 
 
 from network.losses import MultiBoxLoss
