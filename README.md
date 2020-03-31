@@ -48,7 +48,7 @@ This model is a lightweight face mask detection model. Based on ssd,the backbone
 ├── Maskdata
 │   ├── Annotations
 │   ├── ImageSets
-│   	   └── Main
+│        └── Main
 │   │       ├── train.txt
 │   │       ├── trainval.txt
 │   │       └── val.txt
@@ -61,6 +61,7 @@ This model is a lightweight face mask detection model. Based on ssd,the backbone
 │   ├── network.py
 ├── README.md
 └── train.py
+└── requirements.txt
 ```
 
 ## Usage
