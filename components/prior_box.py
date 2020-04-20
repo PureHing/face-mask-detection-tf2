@@ -29,7 +29,7 @@ def priors_box(cfg,image_sizes=None):
     assert len(min_sizes) == len(steps), "anchors number didn't match the feature map layer."
 
     feature_maps = [
-        [math.floor(image_sizes[0] / step), math.floor(image_sizes[1] / step)]
+        [math.ceil(image_sizes[0] / step), math.ceil(image_sizes[1] / step)]
         for step in steps]
 
     anchors = []

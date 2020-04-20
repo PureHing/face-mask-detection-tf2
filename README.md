@@ -76,7 +76,7 @@ Create a new python virtual environment by [Anaconda](https://www.anaconda.com/)
 
    Source data from  [**AIZOOTech**](https://github.com/AIZOOTech/FaceMaskDetection)  , which is a great job. 
 
-   I checked  and corrected some error to apply my own training network according to the voc dataset format. You can download it here. [https://pan.baidu.com/s/1330OWyOL4huB-GWXRkKK6Q](https://pan.baidu.com/s/1330OWyOL4huB-GWXRkKK6Q) code：x5e0
+   I checked  and corrected some error to apply my own training network according to the voc dataset format. You can download it here. [https://pan.baidu.com/s/1nc-cBNAqPIYYAmtGSFUSmg](https://pan.baidu.com/s/1nc-cBNAqPIYYAmtGSFUSmg) code:44pl
 
 2. Data Processing
 
@@ -126,7 +126,7 @@ Create a new python virtual environment by [Anaconda](https://www.anaconda.com/)
 + Convert xml to txt file on  `mAP/ground truth`, predicting  the bbox and class on `mAP/detection-results`.
 
   ```bash
-   python mAP/detect.py --model_path checkpoints/*.h5 --dataset_path Maskdata/ --split val 
+   python mAP/detect.py --model_path checkpoints/ --dataset_path Maskdata/ --split val 
   
    python mAP/compute_mAP.py
   ```

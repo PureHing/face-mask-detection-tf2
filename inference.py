@@ -30,7 +30,7 @@ def parse_predict(predictions, priors, cfg):
 
     bbox_regressions, confs = tf.split(predictions[0], [4, -1], axis=-1)
     boxes = decode_bbox_tf(bbox_regressions, priors, cfg['variances'])
-    ##classifications shape :(num_priors,num_classes)
+
 
     confs = tf.math.softmax(confs, axis=-1)
 
@@ -104,6 +104,7 @@ def main(_):
         priors = tf.cast(priors, tf.float32)
 
         predictions = model.predict(img[np.newaxis, ...])
+
         boxes, classes, scores = parse_predict(predictions, priors, cfg)
 
         print(f"scores:{scores}")
@@ -126,9 +127,10 @@ def main(_):
         capture = cv2.VideoCapture(0)
         capture.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
         capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
-        start = time.time()
+
         priors, _ = priors_box(cfg, image_sizes=(240, 320))
         priors = tf.cast(priors, tf.float32)
+        start = time.time()
         while True:
             _,frame = capture.read()
             if frame is None:

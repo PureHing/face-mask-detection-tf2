@@ -28,19 +28,20 @@ cfg = {
     "base_channel": 16,
 
     # training setting
-    "breaktraing": False,  # if False,training from scratch
-    "epoch": 120,
+    "resume": False,  # if False,training from scratch
+    "epoch": 100,
     "init_lr": 1e-2,
-    "lr_decay_epoch": [40, 80, 100],
+    "lr_decay_epoch": [50, 70],
     "lr_rate": 0.1,
     "warmup_epoch": 5,
-    "min_lr": 1e-5,
+    "min_lr": 1e-4,
+
     "weights_decay": 5e-4,
     "momentum": 0.9,
     "save_freq": 1, #frequency of save model weights
 
     # inference
-    "score_threshold": 0.7,
+    "score_threshold": 0.5,
     "nms_threshold": 0.4,
     "max_number_keep": 200
 }

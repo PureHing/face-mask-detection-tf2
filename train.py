@@ -10,6 +10,7 @@ import os, sys
 from absl.flags import FLAGS
 from absl import flags, logging, app
 
+from components.lr_scheduler import MultiStepWarmUpLR
 from components.utils import set_memory_growth
 from components import config
 from components.prior_box import priors_box
@@ -64,7 +65,7 @@ def main(_):
         sys.exit()
 
 
-    if cfg['breaktraing']:
+    if cfg['resume']:
         # Training from latest weights
         paths = [os.path.join(weights_dir, path)
                  for path in os.listdir(weights_dir)]
@@ -87,10 +88,19 @@ def main(_):
 
     logging.info("Define optimizer and loss computation and so on...")
 
-    learning_rate =tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=1e-3,
-                                                                 decay_steps=20000,
-                                                                 decay_rate=0.96)
-    optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+    # learning_rate =tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=1e-3,
+    #                                                              decay_steps=20000,
+    #                                                              decay_rate=0.96)
+    # optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+    learning_rate = MultiStepWarmUpLR(
+        initial_learning_rate=cfg['init_lr'],
+        lr_steps=[e * steps_per_epoch for e in cfg['lr_decay_epoch']],
+        lr_rate=cfg['lr_rate'],
+        warmup_steps=cfg['warmup_epoch'] * steps_per_epoch,
+        min_lr=cfg['min_lr'])
+
+
+    optimizer = tf.keras.optimizers.SGD(learning_rate=learning_rate, momentum=cfg['momentum'], nesterov=True)
 
     multi_loss = MultiBoxLoss(num_class=len(label_classes), neg_pos_ratio=3)
 

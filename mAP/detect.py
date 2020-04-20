@@ -16,7 +16,6 @@ sys.path.append(rootPath)
 
 from components import config
 
-
 from network.network import SlimModel
 from components.prior_box import priors_box
 from components.utils import decode_bbox_tf, compute_nms
@@ -24,7 +23,8 @@ from components.utils import decode_bbox_tf, compute_nms
 flags.DEFINE_string('model_path', 'checkpoints/', 'VOC format dataset')
 flags.DEFINE_string('dataset_path', 'Maskdata', 'VOC format dataset')
 flags.DEFINE_enum('split', 'val', ['val', 'trainval'], 'val or test dataset')
-flags.DEFINE_list('image_size',[240,320],'single scale for model test')
+flags.DEFINE_list('image_size', [240, 320], 'single scale for model test')
+
 
 def parse_predict(predictions, priors, cfg):
     label_classes = cfg['labels_list']
@@ -42,7 +42,7 @@ def parse_predict(predictions, priors, cfg):
     for c in range(1, len(label_classes)):
         cls_scores = confs[:, c]
 
-        score_idx = cls_scores > 0.02#cfg['score_threshold']
+        score_idx = cls_scores > 0.02  # cfg['score_threshold']
 
         cls_boxes = boxes[score_idx]
         cls_scores = cls_scores[score_idx]
@@ -68,31 +68,6 @@ def parse_predict(predictions, priors, cfg):
     return boxes, classes, scores
 
 
-def parse_annot_gt(annot_file):
-    """Parse Pascal VOC annotations."""
-    tree = ET.parse(annot_file)
-    root = tree.getroot()
-
-
-    for obj in root.iter('object'):
-        difficult = obj.find('difficult')
-        if not difficult:
-            difficult = '0'
-        else:
-            difficult = difficult.text
-        cls = obj.find('name').text
-
-        xmlbox = obj.find('bndbox')
-        bbox = (int(xmlbox.find('xmin').text), int(xmlbox.find('ymin').text),
-                int(xmlbox.find('xmax').text),int(xmlbox.find('ymax').text))
-        list_file.write(cls + " ".join([str(a) for a in bbox]))
-
-
-
-
-
-
-
 def main(_):
     dataset_path = FLAGS.dataset_path
 
@@ -115,7 +90,7 @@ def main(_):
         os.makedirs(ground_thuth_dir)
 
     for file in os.listdir(ground_thuth_dir):
-        path_file = os.path.join(ground_thuth_dir+file)
+        path_file = os.path.join(ground_thuth_dir + file)
         if os.path.isfile(path_file):
             os.remove(path_file)
 
@@ -153,27 +128,26 @@ def main(_):
         img_raw = cv2.imread(image_file)
         img_height_raw, img_width_raw, _ = img_raw.shape
         img = np.float32(img_raw.copy())
-        img = cv2.resize(img, (image_size[1], image_size[0])) # cv2.resize
+        img = cv2.resize(img, (image_size[1], image_size[0]))  # cv2.resize
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = (img / 255.0 - 0.5) / 1.0
         predictions = model.predict(img[np.newaxis, ...])
 
         boxes, classes, scores = parse_predict(predictions, priors, cfg)
-        with open( detect_reslut_dir+ f'{image}.txt', "a") as new_f:
+        with open(detect_reslut_dir + f'{image}.txt', "a") as new_f:
             for prior_index in range(len(boxes)):
                 x1, y1, x2, y2 = (boxes[prior_index][0] * img_width_raw), (boxes[prior_index][1] * img_height_raw), \
                                  (boxes[prior_index][2] * img_width_raw), (boxes[prior_index][3] * img_height_raw)
 
-                top = max(0, np.floor( y1+ 0.5).astype('int32'))
-                left = max(0, np.floor( x1+ 0.5).astype('int32'))
+                top = max(0, np.floor(y1 + 0.5).astype('int32'))
+                left = max(0, np.floor(x1 + 0.5).astype('int32'))
                 bottom = min(img_width_raw, np.floor(y2 + 0.5).astype('int32'))
-                right = min(img_height_raw, np.floor( x2+ 0.5).astype('int32'))
+                right = min(img_height_raw, np.floor(x2 + 0.5).astype('int32'))
 
                 class_name = class_list[classes[prior_index]]
                 score = "{:.2f}".format(scores[prior_index])
                 label = '{} {}'.format(class_name, score)
-                new_f.write("%s %s %s %s %s\n" % (label, left,top, right,bottom))
-
+                new_f.write("%s %s %s %s %s\n" % (label, left, top, right, bottom))
 
         # ground truth
         with open(ground_thuth_dir + f'{image}.txt', 'a') as gt_f:
@@ -191,8 +165,7 @@ def main(_):
                 xmlbox = obj.find('bndbox')
                 bbox = (int(xmlbox.find('xmin').text), int(xmlbox.find('ymin').text),
                         int(xmlbox.find('xmax').text), int(xmlbox.find('ymax').text))
-                gt_f.write(cls +' '+ " ".join([str(a) for a in bbox])+'\n')
-
+                gt_f.write(cls + ' ' + " ".join([str(a) for a in bbox]) + '\n')
 
 
 if __name__ == '__main__':
