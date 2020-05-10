@@ -20,7 +20,7 @@ This model is a lightweight face mask detection model. Based on ssd,the backbone
 │   ├── out_test_00002330.jpg
 │   └── test_00002330.jpg
 ├── checkpoints
-│   └── weights_epoch_120.h5
+│   └── weights_epoch_100.h5
 ├── components
 │   ├── config.py
 │   ├── __init__.py
@@ -76,7 +76,10 @@ Create a new python virtual environment by [Anaconda](https://www.anaconda.com/)
 
    Source data from  [**AIZOOTech**](https://github.com/AIZOOTech/FaceMaskDetection)  , which is a great job. 
 
-   I checked  and corrected some error to apply my own training network according to the voc dataset format. You can download it here. [https://pan.baidu.com/s/1nc-cBNAqPIYYAmtGSFUSmg](https://pan.baidu.com/s/1nc-cBNAqPIYYAmtGSFUSmg) code:44pl
+   I checked  and corrected some error to apply my own training network according to the voc dataset format. 
+   You can download it here:
+   + [Baidu](https://pan.baidu.com/s/1nc-cBNAqPIYYAmtGSFUSmg) code:44pl
+   + [GoogleDrive](https://drive.google.com/open?id=1KVoipQ-VsmF3FDil2QiZgJD1_Nnf02XW)
 
 2. Data Processing
 
