@@ -63,9 +63,12 @@ class PascalVocReader:
 
 
 class create_w_h_txt:
-    def __init__(self, vocxml_path, txt_path):
+    def __init__(self, vocxml_path, txt_path,IMAGE_W,IMAGE_H):
+
         self.voc_path = vocxml_path
         self.txt_path = txt_path
+        self.image_w=IMAGE_W
+        self.image_h=IMAGE_H
         # print(self.voc_path,self.txt_path)
 
     def _gether_w_h(self):
@@ -79,7 +82,7 @@ class create_w_h_txt:
         # print (self.txt_path)
         for file in os.listdir(self.voc_path):
             file_path = os.path.join(self.voc_path, file)
-            xml_parse = PascalVocReader(file_path, 320,240)
+            xml_parse = PascalVocReader(file_path, self.image_w,self.image_h)
             data = xml_parse.getShapes()
             for w, h in data:
                 txtstr = str(w) + ' ' + str(h) + '\n'
@@ -158,7 +161,7 @@ if __name__ == '__main__':
 
     xml_path = "Maskdata/Annotations"
 
-    whtxt = create_w_h_txt(xml_path, 'data.txt')
+    whtxt = create_w_h_txt(xml_path, 'data.txt',320,240)
     whtxt.process_file()
     kmean_parse = kMean_parse('data.txt', k=16)
     kmean_parse.parse_data()
