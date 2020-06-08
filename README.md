@@ -76,18 +76,10 @@ Create a new python virtual environment by [Anaconda](https://www.anaconda.com/)
 
    Source data from  [**AIZOOTech**](https://github.com/AIZOOTech/FaceMaskDetection)  , which is a great job. 
 
-<<<<<<< Updated upstream
    I checked  and corrected some error to apply my own training network according to the voc dataset format. 
    You can download it here:
    + [Baidu](https://pan.baidu.com/s/1nc-cBNAqPIYYAmtGSFUSmg) code:44pl
    + [GoogleDrive](https://drive.google.com/open?id=1KVoipQ-VsmF3FDil2QiZgJD1_Nnf02XW)
-=======
-   I checked  and corrected some error to apply my own training network according to the voc dataset format. You can download it here. 
-   
-   Baidu:[https://pan.baidu.com/s/1nc-cBNAqPIYYAmtGSFUSmg](https://pan.baidu.com/s/1nc-cBNAqPIYYAmtGSFUSmg) code:44pl
-   
-   Google Drive:
->>>>>>> Stashed changes
 
 2. Data Processing
 
