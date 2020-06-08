@@ -2,24 +2,21 @@
 # @Time : 2020/3/24 
 # @File : train.py
 # @Software: PyCharm
-import shutil
+import os
+import sys
 import time
 
 import tensorflow as tf
-import os, sys
-from absl.flags import FLAGS
 from absl import flags, logging, app
+from absl.flags import FLAGS
 
-from components.lr_scheduler import MultiStepWarmUpLR
-from components.utils import set_memory_growth
 from components import config
+from components.lr_scheduler import MultiStepWarmUpLR
 from components.prior_box import priors_box
+from components.utils import set_memory_growth
 from dataset.tf_dataset_preprocess import load_dataset
-from network.network import SlimModel
-
-
-
 from network.losses import MultiBoxLoss
+from network.network import SlimModel
 
 flags.DEFINE_string('gpu', '0', 'which gpu to use')
 
@@ -64,7 +61,6 @@ def main(_):
         logging.info("Create network failed.")
         sys.exit()
 
-
     if cfg['resume']:
         # Training from latest weights
         paths = [os.path.join(weights_dir, path)
@@ -74,17 +70,13 @@ def main(_):
         init_epoch = int(os.path.splitext(latest)[0][-3:])
 
     else:
-        #Training from scratch
+        # Training from scratch
         init_epoch = -1
-
-
-
 
     steps_per_epoch = cfg['dataset_len'] // cfg['batch_size']
     # val_steps_per_epoch = cfg['val_len'] // cfg['batch_size']
 
     logging.info(f"steps_per_epoch:{steps_per_epoch}")
-
 
     logging.info("Define optimizer and loss computation and so on...")
 
@@ -99,7 +91,6 @@ def main(_):
         warmup_steps=cfg['warmup_epoch'] * steps_per_epoch,
         min_lr=cfg['min_lr'])
 
-
     optimizer = tf.keras.optimizers.SGD(learning_rate=learning_rate, momentum=cfg['momentum'], nesterov=True)
 
     multi_loss = MultiBoxLoss(num_class=len(label_classes), neg_pos_ratio=3)
@@ -107,13 +98,12 @@ def main(_):
     train_log_dir = 'logs/train'
     train_summary_writer = tf.summary.create_file_writer(train_log_dir)
 
-
     @tf.function
     def train_step(inputs, labels):
         with tf.GradientTape() as tape:
             predictions = model(inputs, training=True)
             losses = {}
-            losses['reg'] = tf.reduce_sum(model.losses)  #unused. Init for redefine network
+            losses['reg'] = tf.reduce_sum(model.losses)  # unused. Init for redefine network
             losses['loc'], losses['class'] = multi_loss(labels, predictions)
             total_loss = tf.add_n([l for l in losses.values()])
 
@@ -122,7 +112,7 @@ def main(_):
 
         return total_loss, losses
 
-    for epoch in range(init_epoch+1,cfg['epoch']):
+    for epoch in range(init_epoch + 1, cfg['epoch']):
         try:
             start = time.time()
             avg_loss = 0.0
@@ -134,19 +124,22 @@ def main(_):
                 load_t1 = time.time()
                 batch_time = load_t1 - load_t0
 
-                steps =steps_per_epoch*epoch+step
+                steps = steps_per_epoch * epoch + step
                 with train_summary_writer.as_default():
                     tf.summary.scalar('loss/total_loss', total_loss, step=steps)
                     for k, l in losses.items():
                         tf.summary.scalar('loss/{}'.format(k), l, step=steps)
                     tf.summary.scalar('learning_rate', optimizer.lr(steps), step=steps)
 
-                print(f"\rEpoch: {epoch + 1}/{cfg['epoch']} | Batch {step + 1}/{steps_per_epoch} | Batch time {batch_time:.3f} || Loss: {total_loss:.6f} | loc loss:{losses['loc']:.6f} | class loss:{losses['class']:.6f} ",end = '',flush=True)
+                print(
+                    f"\rEpoch: {epoch + 1}/{cfg['epoch']} | Batch {step + 1}/{steps_per_epoch} | Batch time {batch_time:.3f} || Loss: {total_loss:.6f} | loc loss:{losses['loc']:.6f} | class loss:{losses['class']:.6f} ",
+                    end='', flush=True)
 
-            print(f"\nEpoch: {epoch + 1}/{cfg['epoch']}  | Epoch time {(load_t1 - start):.3f} || Average Loss: {avg_loss:.6f}")
+            print(
+                f"\nEpoch: {epoch + 1}/{cfg['epoch']}  | Epoch time {(load_t1 - start):.3f} || Average Loss: {avg_loss:.6f}")
 
             with train_summary_writer.as_default():
-                tf.summary.scalar('loss/avg_loss',avg_loss,step=epoch)
+                tf.summary.scalar('loss/avg_loss', avg_loss, step=epoch)
 
             if (epoch + 1) % cfg['save_freq'] == 0:
                 filepath = os.path.join(weights_dir, f'weights_epoch_{(epoch + 1):03d}.h5')
@@ -160,6 +153,7 @@ def main(_):
             # model.save_weights(filepath)
             # print(f'model saved into: {filepath}')
             exit(0)
+
 
 if __name__ == '__main__':
 

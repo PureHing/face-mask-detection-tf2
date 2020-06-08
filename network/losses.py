@@ -60,7 +60,7 @@ def MultiBoxLoss(num_class=3, neg_pos_ratio=3.0):
         num_prior = tf.shape(y_true)[1]
         loc_pred, class_pred = y_pred[..., :4], y_pred[..., 4:]
         loc_truth, class_truth = y_true[..., :4], tf.squeeze(y_true[..., 4:])
-
+        # print(f"loc_pred{y_pred}")
         cross_entropy = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True, reduction='none')
 
         # compute classification losses without reduction

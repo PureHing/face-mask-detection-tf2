@@ -2,27 +2,23 @@
 # @Time : 2020/3/21 
 # @File : inference.py
 # @Software: PyCharm
+import cv2
+import os
 import time
 
-import tensorflow as tf
-from tensorflow.keras.models import load_model
 import numpy as np
-import os, cv2
+import tensorflow as tf
 from absl import flags, app
 from absl.flags import FLAGS
 
-
-from network.network import SlimModel     # defined by tf.keras
-
+from components import config
 from components.prior_box import priors_box
 from components.utils import decode_bbox_tf, compute_nms, pad_input_image, recover_pad_output, show_image
-from components import config
-
+from network.network import SlimModel  # defined by tf.keras
 
 flags.DEFINE_string('model_path', 'checkpoints/', 'config file path')
 flags.DEFINE_string('img_path', 'assets/1_Handshaking_Handshaking_1_71.jpg', 'path to input image')
-flags.DEFINE_boolean('camera', False, 'get image source from webcam or not')
-
+flags.DEFINE_boolean('camera', True, 'get image source from webcam or not')
 
 
 def parse_predict(predictions, priors, cfg):
@@ -30,7 +26,6 @@ def parse_predict(predictions, priors, cfg):
 
     bbox_regressions, confs = tf.split(predictions[0], [4, -1], axis=-1)
     boxes = decode_bbox_tf(bbox_regressions, priors, cfg['variances'])
-
 
     confs = tf.math.softmax(confs, axis=-1)
 
@@ -70,7 +65,7 @@ def parse_predict(predictions, priors, cfg):
 def main(_):
     global model
     cfg = config.cfg
-    min_sizes=cfg['min_sizes']
+    min_sizes = cfg['min_sizes']
     num_cell = [len(min_sizes[k]) for k in range(len(cfg['steps']))]
 
     try:
@@ -81,7 +76,7 @@ def main(_):
         latest = sorted(paths, key=os.path.getmtime)[-1]
         model.load_weights(latest)
         print(f"model path : {latest}")
-        # model.save('final.h5') #if want to convert to tflite by model.save,it should be set input image size.
+        model.save('final.h5') #if want to convert to tflite by model.save,it should be set input image size.
         # model.summary()
     except AttributeError as e:
         print('Please make sure there is at least one weights at {}'.format(FLAGS.model_path))
@@ -100,7 +95,7 @@ def main(_):
         img, pad_params = pad_input_image(img, max_steps=max(cfg['steps']))
         img = img / 255.0 - 0.5
 
-        priors, _ = priors_box(cfg, image_sizes = (img.shape[0], img.shape[1]))
+        priors, _ = priors_box(cfg, image_sizes=(img.shape[0], img.shape[1]))
         priors = tf.cast(priors, tf.float32)
 
         predictions = model.predict(img[np.newaxis, ...])
@@ -114,9 +109,8 @@ def main(_):
         # draw and save results
         save_img_path = os.path.join('assets/out_' + os.path.basename(FLAGS.img_path))
 
-
         for prior_index in range(len(boxes)):
-            show_image(img_raw, boxes, classes, scores, img_height_raw, img_width_raw, prior_index,cfg['labels_list'])
+            show_image(img_raw, boxes, classes, scores, img_height_raw, img_width_raw, prior_index, cfg['labels_list'])
 
         cv2.imwrite(save_img_path, img_raw)
         cv2.imshow('results', img_raw)
@@ -132,34 +126,35 @@ def main(_):
         priors = tf.cast(priors, tf.float32)
         start = time.time()
         while True:
-            _,frame = capture.read()
+            _, frame = capture.read()
             if frame is None:
                 print('No camera found')
 
-            h,w,_ = frame.shape
+            h, w, _ = frame.shape
             img = np.float32(frame.copy())
 
-            img  = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-            
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
             img = img / 255.0 - 0.5
 
             predictions = model(img[np.newaxis, ...])
-            boxes, classes, scores = parse_predict(predictions, priors, cfg)      
+            boxes, classes, scores = parse_predict(predictions, priors, cfg)
 
             for prior_index in range(len(classes)):
-                show_image(frame, boxes, classes, scores, h, w, prior_index,cfg['labels_list'])
+                show_image(frame, boxes, classes, scores, h, w, prior_index, cfg['labels_list'])
             # calculate fps
             fps_str = "FPS: %.2f" % (1 / (time.time() - start))
             start = time.time()
-            cv2.putText(frame, fps_str, (25, 25),cv2.FONT_HERSHEY_DUPLEX, 0.75, (0, 255, 0), 2)
+            cv2.putText(frame, fps_str, (25, 25), cv2.FONT_HERSHEY_DUPLEX, 0.75, (0, 255, 0), 2)
 
             # show frame
             cv2.imshow('frame', frame)
             if cv2.waitKey(1) == ord('q'):
                 exit()
 
+
 if __name__ == '__main__':
-    os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+    # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
     try:
         app.run(main)
     except Exception as e:
