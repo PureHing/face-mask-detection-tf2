@@ -133,7 +133,8 @@ Create a new python virtual environment by [Anaconda](https://www.anaconda.com/)
   
    python mAP/compute_mAP.py
   ```
-
+# For K210 project: 
+something refer to [k210-camera-project](https://github.com/PureHing/k210-camera-project).
 # Reference
 + mAP code: [https://github.com/Cartucho/mAP](https://github.com/Cartucho/mAP)
 + SSD-Tensorflow: [https://github.com/balancap/SSD-Tensorflow](https://github.com/balancap/SSD-Tensorflow/)
